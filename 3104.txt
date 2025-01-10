@@ -1,0 +1,157 @@
+﻿
+
+URTeC: 3104
+
+Well Spacing Optimization for Permian Basin Based on Integrated Hydraulic Fracturing, Reservoir Simulation and Machine Learning Study
+
+Leizheng (Kevin) Wang*1, Alexander Y. Sun1, Bureau of Economic Geology, The University of Texas at Austin.
+
+Copyright 2020, Unconventional Resources Technology Conference (URTeC) DOI 10.15530/urtec-2020-3104
+
+This paper was prepared for presentation at the Unconventional Resources Technology Conference held in Austin, Texas, USA, 20-22 July 2020.
+The URTeC Technical Program Committee accepted this presentation on the basis of information contained in an abstract submitted by the author(s). The contents of this paper have not been reviewed by URTeC and URTeC does not warrant the accuracy, reliability, or timeliness of any information herein. All information is the responsibility of, and, is subject to corrections by the author(s). Any person or entity that relies on any information obtained from this paper does so at their own risk. The information herein does not necessarily reflect any position of URTeC. Any reproduction, distribution, or storage of any part of this paper by anyone other than the author without the written consent of URTeC is prohibited. 
+
+Abstract
+Unconventional reservoirs, such as Permian Basin, have fundamentally different production behaviors than that of the conventional reservoirs because of the low permeability of formations away from the stimulated volume. Thus, it is difficult to run full-field reservoir simulation to generate a full-field development plan. Even though satisfactory history matching for completion and production data can be achieved for wells at one location, it is difficult to directly apply the results to other areas in the same region. This is especially true in complex thick pay zone reservoirs, such as Permian Basin, where the complex geology, geomechanical properties, and resource properties all make the solution of frac hit (optimal well spacing) very challenging. To our best knowledge, this study is the first to integrate the detailed physics-based simulation, including fracturing simulation, coupled reservoir and geomechanics simulation, with machine learning (ML) to generate a sound workflow for well spacing optimization. In this workflow, a large field is first divided into several representative regions according to geology, geomechanical properties, and reservoir properties; and a typical well is selected for each region. High-quality physics simulation (including fracturing simulation, coupled reservoir simulation and geomechanics simulation) and history matching are then performed for a pair of parent and child wells. Additional well completion scenarios are built upon the base case, which serve as input to the following ML study. Various ensemble regression methods are applied to generate production predictions for unexplored reservoir locations in this field.   
+Introduction
+In recent years, many fracture simulation models have been developed to represent the complex geomechanical processes involved in hydraulic fracturing (F. Ajisafe, Shan, Alimahomed, Lati, & Ejofodomi, 2017; Morales et al., 2016; Pankaj, 2018b). Among them, well interference or well spacing optimization is a critical issue to solve in energy sector, especially during the current industrial downturn (F. O. Ajisafe, Solovyeva, Morales, Ejofodomi, & Porcu, 2017; Pankaj, 2018a; L. Wang & Yu, 2019; M. Wang, Wang, Zhou, & Yu, 2019). Detailed mechanistic study of integrated fracturing simulation and reservoir simulation have made significant progress during the recent years, which greatly helps to unlock unconventional resources and assist the industry to achieve economic goals (Alimahomed et al., 2017; Lashgari, Sun, Zhang, Pope, & Lake, 2019; Min, Sen, Ji, & Sullivan, 2018; Rodriguez, 2019).  Nevertheless, when applying these technologies in unconventional field development and production, major uncertainties remain, including geology aspects such as stress orientation, stress anisotropy and natural fracture distribution, and completion aspects such as discrepancy between different completion strategies (Pankaj, Shukla, Kavousi, & Carr, 2018; Xiong, Liu, Feng, Liu, & Yue, 2019).  A common concern is that even though current physics-based modeling and simulation could match the completion and historical production of a single well or multiple wells, it is still difficult to successfully transfer or scale up one small-area’s knowledge and experience to another area, because of the complexity and uncertainty of unconventional reservoirs (Xiong, Ramanathan, & Nguyen, 2019; Yeh et al., 2018). 
+ML (re)-emerges as a new technology in the oil & gas industry in recent years. The essence of this novel technology is to dig into a large amount of completion, geology, production, geophysics data to extract the important ones (i.e., features), train a learning model, and then apply the trained model on data unseen during training. These techniques have shown great promise for many traditional reservoir applications, such as sweet spot screening, (Bakay et al., 2019), reserve booking (Zhou & Lascaud, 2019), and completion optimization (Clar & Monaco, 2019). Either ensemble regression or neural networks  (Rastogi, Agarwal, Lolon, Mayerhofer, & Oduba, 2019; Schuetter, Mishra, Lin, & Chandramohan, 2019) methods have been used. The quality of ML not only depends on the generalization capability of ML algorithms and computational power, but more often than not it also mainly depends on feature engineering and the petroleum domain knowledge. But the integration between the physics simulation model (fracturing and reservoir simulation) with machine learning has been slow. 
+This paper, to our best knowledge, is the first to show a workflow on integrating mechanistic modeling study, including fracturing simulation and reservoir simulation, with ML to achieve better well inference (frac hit) optimization. The essence of this workflow is to divide a field into several typical regions, and select one representative well from each region, conduct fracture simulation and reservoir simulation to match the current completion and production data. Therefore, by using DoE (design of experiment) method to generate a series of well completion scenarios. We finally put several representative well results (each representative well includes several well spacing scenario results) into a dataset and conduct ML to derive the optimal well spacing solution for different geological locations to help the operators to make the optimal well spacing decision.
+Theory and/or Methods
+Several typical wells are selected from Permian Basin. All the completion data, well log, and production data are acquired from IHS. Schlumberger INTERSECT, KINETIX Shale, and Visage are used for the reservoir simulation, fracturing simulation and geomechanics simulation, respectively. 
+The following procedure is followed for fracturing simulation, reservoir simulation, and geomechanics simulation:
+(1) Firstly, the completion data and production data of parent well are matched by using KINETIX Shale and INTERSECT. The simulation stopped at the time when the child well is drilled.
+(2) Visage is used to conduct geomechanics simulation at this time and geomechanical properties including pore pressure are updated in the mode. Under this reservoir pressure and zone set, the child well is drilled and fractured. The hydraulic fracture structure obtained using Visage is totally different from that of not using Visage.
+(3) The newly generated child well and parent well are produced for the rest of production time in INTERSECT reservoir simulation.
+(4) According to the current well spacing, the new well spacing is changed to cover 200 feet, 300 feet, 400 feet, 550 feet, 700 feet, and 1000 feet range. These new fracturing simulation, geomechanics simulation and reservoir simulation generate new production data. 
+(5) This process is repeated for all the typical well. Each well then has several well completion scenarios corresponding to different well spacing.
+Machine learning: The geology information (depth), reservoir information, detailed completion data and production data for each well are used as input to ML training dataset. The objective function is cumulative oil production.  Many ensemble regression methods including gradient boosting, random forest, extra tree, bagging and stacking are implemented to match 90% of the dataset, derive a regression model, which is then used to make forecast on 10% of the dataset set aside for testing.
+Results
+The hydraulic fracture structure of the selected parent well and the natural fracture systems are shown in Figure 1. Different well spacing generates different child well hydraulic fracture structures, due to the parent well pressure sink and stress shadow effect. Figure 2 shows hydraulic fracture structures of two wells for three scenarios at 200, 300 and 700 feet well spacing.
+
+Figure 1. Natural fracture and hydraulic fracture structure for parent well
+
+
+(1) 200 feet well spacing                                                                 (2) 300 feet well spacing
+
+(3) 700 feet well spacing                                                                     (4)  reservoir pressure distribution for 300 feet well spacing when child                   
+                                                                                                                      well is just drilled
+Figure 2. hydraulic fracture structure for different well spacing
+
+For most cases, if the child well interferes with the parent well, it will hit the parent well stimulated reservoir volume (SRV). But if the well spacing is too close, for example 300 feet, Figure 3 shows the process of child well hydraulic fracture hits the wellbore of parent well (i.e., well interference).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                           (a)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                            (b)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure 3. child well fracture hit the wellbore of the parent well during hydraulic fracturing (left legend shows proppant type for the left parent well, right legend shows fluid pressure for the right child well)
+Figure 4 shows the different type of proppant distribution for the parent well (left) and fluid pressure at hydraulic fracture structure of the child well (right) for 300 feet well spacing scenario. Figure 5 illustrates the maximum principal stress tensor at the moment of the child well is just fractured for 300 feet well spacing case. Figure 6 shows the different type of proppant distribution for the parent well (left) and hydraulic fracture structure of the child well (right) for 700 feet well spacing scenario. Figure 7 illustrates the maximum principal stress tensor at the moment of the child well is just fractured for 1000 feet well spacing case. Figure 8 plots cumulative oil production of the parent well and child well for 300 feet well spacing scenario.
+
+
+
+Figure 4. Plan view of proppant type and distribution for parent well(left) and fluid pressure of child well (right) for 300 feet well spacing case
+
+Figure 5. Maximum horizontal stress tensor for 300 feet well spacing case 
+
+
+Figure 6. Plan view of proppant type and distribution for parent well(left) and fluid pressure of child well (right) for 700 feet well spacing case
+
+
+Figure 7. Maximum horizontal stress tensor for 1000 feet well spacing case 
+
+Figure 8. Cumulative oil production 
+Table 1. Input parameters for machine learning
+Well and reservoir info1well direction2well location3Perm4Porosity5pay zone 6TOC7Net pay thickness8Oil gravity9Reservoir temperature10Reservoir pressure11Reservoir depthcompletion1well completion strategy2injection rate3proppant loading4cluster number per stage5lateral length6stages7stages spacing8cluster spacing9completion fluid type or hybrid10proppant type size11Well spacingGeomechanics properties1Horizontal principal stress2Young's modulus3Poisson ratio4Pore pressure
+This study used three Permian well pairs, each of which generates 5~6 well spacing cases. To save the expensive simulation time, some wells are only simulated for 3 stages and then scaled up the results to match the whole well production data. All the completion, geology, reservoir and production data are put into the ML database. The possible input parameters are listed in Table 1 which mainly includes well, reservoir, completion and geomechanics properties information. 80% of data is used as training and validation set and the rest 20% data is used as testing data set.  After using several machine leering algorithms including gradient boosting regression, random forest regression, extra tree regression methods, good matching is achieved and sound prediction for the new scenarios are made (also validated through the input dataset) as shown in Figure 9. Machine learning study also generates feature importance results, which clearly shows that well location and local geomechanics properties are crucial to optimize cumulative oil production except well spacing factor. When using this ML results to optimize well spacing, several well spacing parameters could be used to predict the cumulative oil to determine the best scenario depending on the specific local geomechanics, reservoir and geology properties. It is always impossible to claim one fixed value as the optimal well spacing for full field area. Fully considering each region’s general geology, reservoir and geomechanics properties is the priority for unconventional development planning.
+
+Figure 9. Comparison between model prediction and simulated production data on the test set.
+Discussion
+The fracture simulation and reservoir simulation illustrate the geomechanics behind the well interference phenomena under different well spacing scenarios. Machine learning results can be used to predict how different geology and reservoir properties affect the optimal well spacing and generate each optimal solution for each specific individual geology area. 
+Conclusions
+This study shows a workflow of integration of physics simulation and machine learning to solve the fracture hit problem. In real field application case, including more example well pairs increase the workflow credibility and accuracy. The critical points for a large field development planning in this workflow are:
+(1) First the full field needs to be divided into several small regions, and one or few typical wells are selected for each region. For this step, geology and geomechanics understanding and reasonable expert’s judgement for different well productivity is crucial. It is very hard to generalize good solution if the selected typical well cannot represent the general productivity and geology trend of this region.
+(2) We need to do good matching for the current completion and production data using integrated fracture simulation, reservoir simulation and geomechanics simulation. Accurately understanding the physics of each base case is the foundation of the workflow.
+(3) The simulation solution to one set of production data are always not unique, understanding which one is closer to the field and geology, geomechanics reality data is more important than the historical matching itself. HM matching solutions should effectively cover the uncertainty range for some unknow parameters. Multiple realization historical matching approach is recommended in this step.
+(4) Real field production data, geology and geomechanics heterogeneity, natural fracture network is much more complicated than half conceptual models. If operators put this workflow into field practice, more external observed data (such as micro seismic, actual fracture length and pressure response, etc.) also need to be matched in the base model. The more other observed data got matched, the more confidence and better accuracy to use it to direct field development planning. 
+(5) Using the base case from step (2), we can generate production for several well spacing scenarios. Normally we have too many parameters to put into the ML study, such as pumping rate, completion fluid type, sand type and size, geomechanics properties. The difficulty of machine learning is way too much data but always not filtered useful and real effective data. Feature filtering significantly helps to correctly summarize and deduce the correct answer in this step. This needs a good understanding, knowledge and experience for the local geology, geomechanics, completion, reservoir, and production.
+References
+
+Ajisafe, F., Shan, D., Alimahomed, F., Lati, S., & Ejofodomi, E. (2017). An Integrated Workflow for Completion and Stimulation Design Optimization in the Avalon Shale, Permian Basin. Paper presented at the SPE Western Regional Meeting, Bakersfield, California. https://doi.org/10.2118/185672-MS
+Ajisafe, F. O., Solovyeva, I., Morales, A., Ejofodomi, E., & Porcu, M. M. (2017). Impact of Well Spacing and Interference on Production Performance in Unconventional Reservoirs, Permian Basin. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Austin, Texas, USA. https://doi.org/10.15530/URTEC-2017-2690466
+Alimahomed, F., Malpani, R., Jose, R., Haddad, E., Arteaga, E. V., Smith, L., & Lati, S. (2017). Stacked Pay Pad Development in the Midland Basin. Paper presented at the SPE Liquids-Rich Basins Conference - North America, Midland, Texas, USA. https://doi.org/10.2118/187496-MS
+Bakay, A., Caers, J., Mukerji, T., Dong, Y., Briceno, A., & Neumann, D. (2019). Integrating Geostatistical Modeling with Machine Learning for Production Forecast in Shale Reservoirs: Case Study from Eagle Ford. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Denver, Colorado, USA. https://doi.org/10.15530/urtec-2019-141
+Clar, F. H., & Monaco, A. (2019). Data-Driven Approach to Optimize Stimulation Design in Eagle Ford Formation. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Denver, Colorado, USA. https://doi.org/10.15530/urtec-2019-224
+Lashgari, H. R., Sun, A., Zhang, T., Pope, G. A., & Lake, L. W. (2019). Evaluation of carbon dioxide storage and miscible gas EOR in shale oil reservoirs. Fuel, 241, 1223-1235. doi: https://doi.org/10.1016/j.fuel.2018.11.076
+Min, K. S., Sen, V., Ji, L., & Sullivan, R. B. (2018). Optimization of Completion and Well Spacing for Development of Multi-Stacked Reservoirs Using Integration of Data Analytics, Geomechanics and Reservoir Flow Modeling. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Houston, Texas, USA. https://doi.org/10.15530/URTEC-2018-2897656
+Morales, A., Zhang, K., Gakhar, K., Marongiu Porcu, M., Lee, D., Shan, D., . . . Acock, A. (2016). Advanced Modeling of Interwell Fracturing Interference: An Eagle Ford Shale Oil Study - Refracturing. Paper presented at the SPE Hydraulic Fracturing Technology Conference, The Woodlands, Texas, USA. https://doi.org/10.2118/179177-MS
+Pankaj, P. (2018a). Characterizing Well Spacing, Well Stacking, and Well Completion Optimization in the Permian Basin: An Improved and Efficient Workflow Using Cloud-Based Computing. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Houston, Texas, USA. https://doi.org/10.15530/URTEC-2018-2876482
+Pankaj, P. (2018b). Decoding Positives or Negatives of Fracture-Hits: A Geomechanical Investigation of Fracture-Hits and Its Implications for Well Productivity and Integrity. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Houston, Texas, USA. https://doi.org/10.15530/URTEC-2018-2876100
+Pankaj, P., Shukla, P., Kavousi, P., & Carr, T. (2018). Integrated Well Interference Modeling Reveals Optimized Well Completion and Spacing in the Marcellus Shale. Paper presented at the SPE Annual Technical Conference and Exhibition, Dallas, Texas, USA. https://doi.org/10.2118/191393-MS
+Rastogi, A., Agarwal, K., Lolon, E., Mayerhofer, M., & Oduba, O. (2019). Demystifying Data-Driven Neural Networks for Multivariate Production Analysis. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Denver, Colorado, USA. https://doi.org/10.15530/urtec-2019-247
+Rodriguez, A. (2019). Inferences of Two Dynamic Processes on Recovery Factor and Well Spacing for a Shale Oil Reservoir. Paper presented at the SPE Liquids-Rich Basins Conference - North America, Odessa, Texas, USA. https://doi.org/10.2118/197089-MS
+Schuetter, J., Mishra, S., Lin, L., & Chandramohan, D. (2019). Ensemble Learning: A Robust Paradigm for Data-Driven Modeling in Unconventional Reservoirs. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Denver, Colorado, USA. https://doi.org/10.15530/urtec-2019-929
+Wang, L., & Yu, W. (2019). Lean Gas Huff and Puff Process for Eagle Ford Shale with Connecting Natural Fractures: Well Interference, Methane Adsorption and Gas Trapping Effects. Paper presented at the SPE Liquids-Rich Basins Conference - North America, Odessa, Texas, USA. https://doi.org/10.2118/197087-MS
+Wang, M., Wang, L., Zhou, W., & Yu, W. (2019). Lean gas Huff and Puff process for Eagle Ford Shale: Methane adsorption and gas trapping effects on EOR. Fuel, 248, 143-151. doi: https://doi.org/10.1016/j.fuel.2019.03.084
+Xiong, H., Liu, S., Feng, F., Liu, S., & Yue, K. (2019). Optimizing Fracturing Design and Well Spacing with Complex-Fracture and Reservoir Simulations: A Permian Basin Case Study. SPE Production & Operations, Preprint(Preprint), 16. doi: 10.2118/194367-pa
+Xiong, H., Ramanathan, R., & Nguyen, K. (2019). Maximizing Asset Value by Full Field Development - Case Studies in the Permian Basin. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Denver, Colorado, USA. https://doi.org/10.15530/urtec-2019-554
+Yeh, T.-h., Cakici, D., Jennings, J., Will, J., Guerra, J. C., Durand, M., . . . Bai, T. (2018). An Integrated Geomechanics-Reservoir Simulation Workflow for Completion Design Optimization. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Houston, Texas, USA. https://doi.org/10.15530/URTEC-2018-2902561
+Zhou, H., & Lascaud, B. (2019). An Integrated Machine Learning Framework for Optimizing Unconventional Resources Development. Paper presented at the SPE/AAPG/SEG Unconventional Resources Technology Conference, Denver, Colorado, USA. https://doi.org/10.15530/urtec-2019-319
+
+
+
+
+URTeC 3104
+

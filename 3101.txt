@@ -1,0 +1,116 @@
+﻿
+
+URTeC: 3101
+
+Development of a Machine-Learning-Based Workflow for Well Completion Optimization in Permian Basin
+
+Leizheng (Kevin) Wang*1, Julia Gale1, Alexander Y. Sun1, Bureau of Economic Geology, The University of Texas at Austin.
+Copyright 2020, Unconventional Resources Technology Conference (URTeC) DOI 10.15530/urtec-2020-3101
+
+This paper was prepared for presentation at the Unconventional Resources Technology Conference held in Austin, Texas, USA, 20-22 July 2020.
+The URTeC Technical Program Committee accepted this presentation on the basis of information contained in an abstract submitted by the author(s). The contents of this paper have not been reviewed by URTeC and URTeC does not warrant the accuracy, reliability, or timeliness of any information herein. All information is the responsibility of, and, is subject to corrections by the author(s). Any person or entity that relies on any information obtained from this paper does so at their own risk. The information herein does not necessarily reflect any position of URTeC. Any reproduction, distribution, or storage of any part of this paper by anyone other than the author without the written consent of URTeC is prohibited. 
+
+Abstract
+Efficient and cost-effective unconventional oil and gas (UOG) recovery depends critically on the knowledge of primary factors controlling the reservoir producing behaviors, as well as on well completion strategies. Currently the completion design of UOG wells is often dominated by geometry-based approaches, neglecting the impact of spatial heterogeneity of reservoir properties. The primary goal of this work is to identify geological factors and well completion strategies important to production using systematic Design of Experiment (DoE) methodologies, and then train a data-driven, machine-learning (ML) proxy model to expedite optimization of well completion. The results are demonstrated for applications in Permian Basin.
+
+A set of Permian Basin wells are selected to provide a wide spectrum of geological, geomechanical and completion features existing in the basin. For each well, process-level modeling is performed in commercial hydraulic fracturing (HF) and reservoir simulators. For each well, the HF model is calibrated against historical well production data, by adjusting hydraulic fracture structure and reservoir properties. Using DoE methodologies, we evaluate a large number of completion strategies, in conjunction to different geological and geomechanical conditions. The effect of different decision variables on HF completion efficiency and production are examined, including the type of proppant carrier fluid (slick water and crosslinker), and proppant types (e.g., ceramic, curved resin, sizes, concentration, size, etc.). The results are used to develop an ML-based proxy model, which can be used to make rapid design of well completion strategies for future development, without requiring running time-consuming, full-scale reservoir simulations. 
+
+Simulation results of this work show the well completion implementation for many of the selected wells is far from optimal. History matching helps to establish the input-production relationships for each well, which provides a base model for sensitivity runs. The well set is divided into two parts. One part is used to develop an ML proxy model, and the rest is used for testing. Proxy modeling results suggest that the machine learning model can learn the complex reservoir input-output relations well, providing a data-driven tool for rapid well completion design and field production evaluation. 
+
+The complex geology, coupled with dynamic fracture stimulation and reservoir production processes are often not well investigated and represented in current practice, due to the lack of tools and representative data. As a result, sub-optimal production prevails, which erodes the HF economics. Previous works either mainly focus on mechanism simulation study or over-emphasize the original raw data but neglect the complex geology and physics underlying fracturing and reservoir production processes. The contribution of this study is we provide an integrated solution for well completion design based on real production data, fracturing simulation and reservoir simulation from different representative locations in Permian Basin. The physics-based proxy model can be used for future well designs by taking account into the effects of a large number of geological, geomechanical, and production factors. 
+
+Introduction
+The hydraulic fracturing process, which is a key contributor to the recent shale gas boom in  U.S., creates hydraulic fractures in shale formations surrounding production wells, enabling mass transport conduits from shale gas/tight oil source rock to the wellbore. The resulting fractured reservoir volume, often referred to as the stimulated reservoir volume (SRV), is critical for unconventional production. Therefore, completion design has attracted major attention from oil and gas (O&G) industry (Hu, Sun et al. 2014; Xiong, Liu et al. 2019).  However, the complex geology and geomechanical properties of unconventional O&G plays, especially in large basins like Permian, have led to significant uncertainties and challenges related to characterization of stress orientation, stress anisotropy, and natural fracture distribution. Although it is possible to perform good historical matching on one or a few wells, scaling up, or “translating”, the results obtained from one production location to another remains a challenge in practice.        
+In recent years, the renaissance of machine learning (ML) has benefited many business and industrial sectors, including the energy sector. The main premise of ML is that there exists inherent relations between input and target variables, which can be learned with a reasonable amount of training data by using some statistical algorithms (e.g., random forest, gradient-boosted decision trees, or artificial neural network). The training of ML has been made more accessible, thanks to the increased availability of affordable computing power (Rastogi, Agarwal et al. 2019; Schuetter, Mishra et al. 2019). In the O&G sector, common ML applications include sweet-spot filtering, well spacing optimization, reservoir booking, petrophysics data processing (Bakay, Caers et al. 2019; Clar and Monaco 2019; Pan, Bi et al. 2019; Tamimi, Samani et al. 2019; Zhou and Lascaud 2019). However, the industry tends to either focus on studying the physics mechanisms (e.g., fracturing propagation simulation, reservoir simulation, geomechanics simulation) (Ajisafe, Shan et al. 2017; Jaripatke, Barman et al. 2018; Wang and Yu 2019; Wang, Wang et al. 2019), or spend most of the time studying the production data in the way of traditional data science (Al-Alwani, Britt et al. 2019; Al-Alwani, Dunn-Norman et al. 2019; Al-Alwani, Dunn-Norman et al. 2019). Effective combination of complex physics-based modeling and machine learning (“workflow” hereafter) is still not well developed at this time. To make this workflow practical, a key capability would be extracting and scaling up the solution/knowledge gained from a small number of representative locations and then applying it to other locations, or even to the entire basin. Developing such a workflow requires solid knowledge from multiple disciplines, including well completion, geology, geomechanics, production, reservoir, and machine learning. 
+In this work, we started from the detailed fracture simulation and reservoir history matching for representative wells (or typical wells) from a field. Then building on the base case, many different completion scenarios are simulated for these typical wells, including various types of proppant size, concentration and completion fluid. To do, we divided the whole field into several regions (clusters) according to geology, geomechanics and reservoir properties, and selected one typical well for each location to represent this individual region as one element in the subsequent ML study. This DoE methodology is repeated for each typical well in this study. Finally, all the wells’ completion scenarios are inserted into training dataset for machine learning, and a trained ML can be used to predict production at new locations. This study intends to show a workflow that effectively combines mechanistic simulation study and ML to provide solutions for completion optimization.
+Methodology
+Four typical well pairs are selected from Permian basin. All the completion data, log and production data are acquired from IHS. We used Schlumberger INTERSECT and KINETIX SHALE for the reservoir simulation and fracturing simulation study, respectively. The first well produces one year earlier than the child well and the total production time for both wells are four years.
+For each typical well pair, firstly the base case is simulated in fracture simulator and production historical matching is conducted in the INTERSECT reservoir simulation. Then over 10 different completion designs are simulated, and the resulting fracture networks are used in the forward reservoir simulation to evaluate the corresponding completion design performance. To save the expensive simulation time and focus on mechanism study, only 3 stages (12 clusters) for each well are simulated and final results are scaled up to match the total well production data. The natural fracture network and 12 clusters per well are shown in Figure 1. Details of these completion designs are provided in Table 1.
+
+Figure 1. Natural fracture network and 3 stages per well (two wells)
+
+
+
+
+
+
+
+
+Table 1: Completion design scenarios for typical wells
+
+CategoryScenariosContentbase case1mixture of different size sand, mixture of slick water and crosslinkProppant and completion fluid amount2more proppant, 30%-40% more3less proppant, 40% less4higher proppant concentration5lower proppant concentrationProppant category6proppant type: at the tip, ceramic7all sands8resin coated sand9resin coated ceramicCompletion fluid category10all slickwater11linear gel12high performance crosslinked borate fluid13Sapphire VF (guar free viscoelastic fracturing fluid)14Viscous slickwaterResults and discussion
+In this study, a total of four typical well pairs are selected from Permian basin. Firstly, all completion data and production data are matched in fracture simulation and reservoir simulations. Figure 2 shows hydraulic fracture structure for the base case in the first typical well pair. Figure 3 shows the proppant distribution in this unstructured reservoir model. 
+
+Figure 2. Hydraulic fracture structure for base case (two wells)
+
+
+Figure 3. Proppant distribution in reservoir model
+Figure 4 illustrates the reservoir pressure distribution before the second well goes online and at the end of 4 years of production.
+
+(a) At the end of first year production for well 1
+
+(b) At the end of 4 years of production for two wells
+Figure 4. Reservoir pressure distribution during production for base case
+For each typical well pair, over ten kinds of completion designs are implemented in this workflow. These completion scenarios generate different hydraulic fracturs and show different production in the forward reservoir simulation. Figure 5 shows for the viscous slickwater as completion fluid case, the generated hydraulic fracture area is much larger than the base case. These figures also reveal the reservoir pressure distribution at end of production, which is significant larger and well distributed in the SRV area.
+
+(1) Permeability distribution for the viscous slickwater completion case 
+
+(2) Reservoir pressure distribution at end of production
+Figure 5. Hydraulic fracture structure, permeability distribution and reservoir pressure distribution during production for viscous slickwater case
+Injecting more suitable amount of completion fluid and proppant also increase final oil production. Figure 6 clearly shows this completion strategy generates more higher-permeability hydraulic fractures, leading to higher production.
+
+(a) Permeability distribution for more completion fluid and proppant completion case
+
+(b) Reservoir pressure distribution at end of production
+Figure 6. Permeability distribution and reservoir pressure distribution during production for more completion fluid and proppant completion case
+Using leaner gel to replace some of completion fluid in this particular base case could effectively improve productivity. Figure 6 (a) shows that this strategy enhances both fracture permeability and SRV area. Figure 6 (b) demonstrates the final reservoir pressure distribution at end of production.  
+
+(a) Permeability distribution for using linear gel completion case
+
+
+(b) Reservoir pressure distribution at end of production
+Figure 7. Permeability distribution and reservoir pressure distribution during production for using leaner gel completion case
+Figure 8 shows some cumulative oil production for some different completion scenarios for this well pair.
+ 
+Figure 8. Cumulative oil production of some completion scenarios for one typical well pair
+Machine learning is conducted for all the different completion case results from these four well pairs. Many reservoirs, well, completion and geomechanics properties can be used as parameters, as listed in Table 2. Several methods including gradient boosting regression, random forest regression, extra tree regression, are used to conduct the machine learning.     
+
+Table 2: Potential machine learning parameters for completion optimization
+
+Well and reservoir information1Well direction2Well location3Perm4Porosity5Pay zone thickness6TOC7Net pay thickness8Oil gravity9Reservoir temperature10Reservoir pressure11Reservoir depthcompletion1Well completion strategy2Injection rate3Proppant loading4Cluster number per stage5Lateral length6Stages7Stage spacing8Cluster spacing9Completion fluid type or hybrid10Proppant type size11Well spacingGeomechanics properties1Young's modulus2Poisson's ratio3Pore pressure4Maximum horizontal stress5Minimum horizontal stress
+70% of data is used as training and validation set and the rest 30% data is used as testing data set. We emphasize that data wrangling and feature engineering are important steps in ML. Many times there can be too many potential input parameters (features), not all of them are important. Also some important data may be missing or inaccurate. Therefore, filtering of these parameters becomes more tedious and important than choosing machine learning algorithm itself. For this example, extra tree regression shows better root mean square error (RMSE) and better matching quality after checking the learning curve results. Figure 9 and Figure 10 illustrates the prediction quality comparing with the testing data. The ML results also demonstrate the parameter importance as shown in Figure 11. For this case study, the most important parameters are geomechanics properties (Poisson’s ratio and maximum horizontal stress and Youngs Modulus), two completion parameters (lateral length and completion fluid category), and also well location (reservoir depth).
+
+Figure 9. Cumulative oil for training, test and prediction set. 
+
+Figure 10. Comparison between model prediction and simulated production data on the test set.
+
+
+Figure 11. Feature importance after machine learning
+
+Conclusions
+This study exemplifies an ML-based workflow for integrating fracturing simulation, reservoir simulation and machine learning to aid completion design decisions for different areas of an unconventional field. Our main results can be summarized as
+(1) Well selection in a field. Splitting the full field into several typical regions is a key step in our workflow. Selection of representative or typical well is crucial, which depends on the operator’s knowledge, experience and data analytics for geology, geomechanics, reservoir and production.
+(2) The solutions for historical matching for completion and reservoir simulation are always not unique. Explore more historical matching for more realizations help to eliminate the uncertainty. That means more time should be spent on history matching, which will lead to better understanding of the physics and which will provide quality control in this workflow.
+(3) Quality of machine learning depends on quality of input data and feature engineering process. While machine learning algorithms save calculation time and improve accuracy, more important part of this workflow tends to heavily rely on input data accuracy and good understanding of petroleum reservoir engineering.
+(4) When operators implement this workflow in real field completion, incorporating as much as possible other field parameters such as (microcosmic signal and chemical fingerprint, etc.) in the simulation model can effectively improve credibility and accuracy. Comparing and calibrating with other field data becomes critical technical assurance when applying this sworkflow.
+References
+Ajisafe, F., D. Shan, et al. (2017). An Integrated Workflow for Completion and Stimulation Design Optimization in the Avalon Shale, Permian Basin. SPE Western Regional Meeting. Bakersfield, California, Society of Petroleum Engineers: 15.
+Al-Alwani, M. A., L. Britt, et al. (2019). Review of Stimulation and Completion Activities and Trends in the United States Shale Plays: Permian Basin Case Study. 53rd U.S. Rock Mechanics/Geomechanics Symposium. New York City, New York, American Rock Mechanics Association: 24.
+Al-Alwani, M. A., S. Dunn-Norman, et al. (2019). Descriptive Data Analytics for the Stimulation, Completion Activities, and Wells' Productivity in the Marcellus Shale Play. SPE/AAPG/SEG Asia Pacific Unconventional Resources Technology Conference. Brisbane, Australia, Unconventional Resources Technology Conference: 21.
+Al-Alwani, M. A., S. Dunn-Norman, et al. (2019). Production Performance Evaluation from Stimulation and Completion Parameters in the Permian Basin: Data Mining Approach. SPE/AAPG/SEG Asia Pacific Unconventional Resources Technology Conference. Brisbane, Australia, Unconventional Resources Technology Conference: 14.
+Bakay, A., J. Caers, et al. (2019). Integrating Geostatistical Modeling with Machine Learning for Production Forecast in Shale Reservoirs: Case Study from Eagle Ford. SPE/AAPG/SEG Unconventional Resources Technology Conference. Denver, Colorado, USA, Unconventional Resources Technology Conference: 16.
+Clar, F. H. and A. Monaco (2019). Data-Driven Approach to Optimize Stimulation Design in Eagle Ford Formation. SPE/AAPG/SEG Unconventional Resources Technology Conference. Denver, Colorado, USA, Unconventional Resources Technology Conference: 20.
+Hu, K., J. Sun, et al. (2014). Proppants Selection Based on Field Case Studies of Well Production Performance in the Bakken Shale Play. SPE Western North American and Rocky Mountain Joint Meeting. Denver, Colorado, Society of Petroleum Engineers: 20.
+Jaripatke, O. A., I. Barman, et al. (2018). Review of Permian Completion Designs and Results. SPE Annual Technical Conference and Exhibition. Dallas, Texas, USA, Society of Petroleum Engineers: 17.
+Pan, Y., R. Bi, et al. (2019). An Effective Physics-Based Deep Learning Model for Enhancing Production Surveillance and Analysis in Unconventional Reservoirs. SPE/AAPG/SEG Unconventional Resources Technology Conference. Denver, Colorado, USA, Unconventional Resources Technology Conference: 23.
+Rastogi, A., K. Agarwal, et al. (2019). Demystifying Data-Driven Neural Networks for Multivariate Production Analysis. SPE/AAPG/SEG Unconventional Resources Technology Conference. Denver, Colorado, USA, Unconventional Resources Technology Conference: 21.
+Schuetter, J., S. Mishra, et al. (2019). Ensemble Learning: A Robust Paradigm for Data-Driven Modeling in Unconventional Reservoirs. SPE/AAPG/SEG Unconventional Resources Technology Conference. Denver, Colorado, USA, Unconventional Resources Technology Conference: 12.
+Tamimi, N., S. Samani, et al. (2019). An Artificial Intelligence Decision Support System for Unconventional Field Development Design. SPE/AAPG/SEG Unconventional Resources Technology Conference. Denver, Colorado, USA, Unconventional Resources Technology Conference: 11.
+Wang, L. and W. Yu (2019). Lean Gas Huff and Puff Process for Eagle Ford Shale with Connecting Natural Fractures: Well Interference, Methane Adsorption and Gas Trapping Effects. SPE Liquids-Rich Basins Conference - North America. Odessa, Texas, USA, Society of Petroleum Engineers: 15.
+Wang, M., L. Wang, et al. (2019). "Lean gas Huff and Puff process for Eagle Ford Shale: Methane adsorption and gas trapping effects on EOR." Fuel 248: 143-151.
+Xiong, H., S. Liu, et al. (2019). "Optimizing Fracturing Design and Well Spacing with Complex-Fracture and Reservoir Simulations: A Permian Basin Case Study." SPE Production & Operations Preprint(Preprint): 16.
+Zhou, H. and B. Lascaud (2019). An Integrated Machine Learning Framework for Optimizing Unconventional Resources Development. SPE/AAPG/SEG Unconventional Resources Technology Conference. Denver, Colorado, USA, Unconventional Resources Technology Conference: 9.
+
+
+URTeC 3101
+
